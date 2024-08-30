@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:student_management_provider/core/constants.dart';
 import 'package:student_management_provider/presentation/screens/profile/screen_profile.dart';
 
 class StudentCardWidget extends StatelessWidget {
@@ -17,29 +18,15 @@ class StudentCardWidget extends StatelessWidget {
           context,
           MaterialPageRoute(
               builder: (ctx) => ScreenProfile(
-                name: 'Sibin Sebastian',
+                  name: 'Sibin Sebastian',
                   tag: 'tag-studentImage-$index',
                   imageUrl: 'assets/student_list.png'))),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
-          decoration: BoxDecoration(
-              color: Colors.grey[900],
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                const BoxShadow(
-                  color: Colors.black,
-                  offset: Offset(5, 5),
-                  blurRadius: 15,
-                  spreadRadius: 1,
-                ),
-                BoxShadow(
-                  color: Colors.grey.shade800,
-                  offset: Offset(-3, -3),
-                  blurRadius: 15,
-                  spreadRadius: 1,
-                )
-              ]),
+          decoration: Theme.of(context).brightness == Brightness.dark
+              ? boxDecoration
+              : boxDecorationWhite,
           width: size.width,
           child: Stack(
             children: [

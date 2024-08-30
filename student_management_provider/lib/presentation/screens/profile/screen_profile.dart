@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:student_management_provider/core/constants.dart';
+import 'package:student_management_provider/core/navigation/navigation_service.dart';
+import 'package:student_management_provider/presentation/screens/edit_student/edit_student.dart';
+import 'package:student_management_provider/presentation/screens/widgets/small_button_widget.dart';
 
 class ScreenProfile extends StatelessWidget {
   const ScreenProfile(
@@ -16,44 +20,77 @@ class ScreenProfile extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 60,
-        backgroundColor: Colors.green,
         centerTitle: true,
-        title: Text('Sibin Sebastian'),
+        title: const Text('Student Profile'),
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            h20,
-            Container(
-              width: size.width,
-              height: size.height * .3,
-              child: Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.grey[900],
-                    boxShadow: [
-                      const BoxShadow(
-                        color: Colors.black,
-                        offset: Offset(5, 5),
-                        blurRadius: 15,
-                        spreadRadius: 1,
-                      ),
-                      BoxShadow(
-                        color: Colors.grey.shade800,
-                        offset: const Offset(-3, -3),
-                        blurRadius: 15,
-                        spreadRadius: 1,
-                      )
-                    ]),
-                child: Hero(
-                  tag: tag,
-                  child: Image.asset(imageUrl),
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: ListView(
+            children: [
+              h20,
+              SizedBox(
+                width: size.width,
+                height: size.height * .3,
+                child: Container(
+                  width: 50,
+                  height: 50,
+                  decoration: Theme.of(context).brightness == Brightness.dark
+                      ? boxDecorCircle
+                      : boxDecorCircleWhite,
+                  child: Hero(tag: tag, child: Image.asset(imageUrl)),
                 ),
               ),
-            ),
-          ],
+              h20,
+              Text(
+                'Name:',
+                style: GoogleFonts.roboto(fontSize: 20, color: Colors.grey),
+              ),
+              h10,
+              Text(
+                "Sibin Sebastian",
+                style: GoogleFonts.roboto(fontSize: 20),
+              ),
+              h20,
+              Text(
+                'class:',
+                style: GoogleFonts.roboto(fontSize: 20, color: Colors.grey),
+              ),
+              h10,
+              Text(
+                "Flutter",
+                style: GoogleFonts.roboto(fontSize: 20),
+              ),
+              h20,
+              Text(
+                'Phone No:',
+                style: GoogleFonts.roboto(fontSize: 20, color: Colors.grey),
+              ),
+              h10,
+              Text(
+                "8139073483",
+                style: GoogleFonts.roboto(fontSize: 20),
+              ),
+              h20,
+              Text(
+                'Address:',
+                style: GoogleFonts.roboto(fontSize: 20, color: Colors.grey),
+              ),
+              h10,
+              Text(
+                "Acharuparabil House, Nettoor, Nettoor P.0, 682040.",
+                style: GoogleFonts.roboto(fontSize: 20),
+              ),
+              h30,
+              SmallButtonWidget(
+                  size: size,
+                  icon: Icons.edit,
+                  title: 'Edit',
+                  voidCallback: () {
+                    NavigationService.instance.navigate(const EditStudent());
+                  })
+            ],
+          ),
         ),
       ),
     );

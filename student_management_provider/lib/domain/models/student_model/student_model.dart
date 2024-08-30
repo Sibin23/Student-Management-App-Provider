@@ -1,12 +1,14 @@
+
+
 class StudentModel {
-  final int id;
+  int? id;
   final String image;
   final String name;
   final String std;
   final String phoneNumber;
   final String address;
   StudentModel(
-      {required this.id,
+      {this.id = 0,
       required this.image,
       required this.name,
       required this.std,
@@ -15,10 +17,10 @@ class StudentModel {
 
   factory StudentModel.fromMap(Map<String, dynamic> map) {
     return StudentModel(
-      id: map['id'] as int,
+      id: map['id'],
       image: map['image'] as String,
       name: map['name'] as String,
-      std: map['std'] as String,
+      std: map['standard'] as String,
       phoneNumber: map['phoneNumber'] as String,
       address: map['address'] as String,
     );
@@ -28,7 +30,7 @@ class StudentModel {
         'id': id,
         'image': image,
         'name': name,
-        'std': std,
+        'standard': std,
         'phoneNumber': phoneNumber,
         'address': address,
       };

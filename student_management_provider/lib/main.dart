@@ -1,34 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:student_management_provider/core/navigation/navigation_service.dart';
-import 'package:student_management_provider/domain/repository/student_repository/student_repository.dart';
 import 'package:student_management_provider/presentation/provider/splash_screen/splash_screen_provider.dart';
-import 'package:student_management_provider/presentation/provider/student/students_provider.dart';
+import 'package:student_management_provider/presentation/provider/student/edit_student_provider.dart';
+import 'package:student_management_provider/presentation/provider/student/new_student_provider.dart';
 import 'package:student_management_provider/presentation/screens/splash/splash_screen.dart';
 
-Future<void> main() async {
+void main()  {
   WidgetsFlutterBinding.ensureInitialized();
-  await initializeDatabase();
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<SplashScreenProvider>(
             create: (_) => SplashScreenProvider()),
-            ChangeNotifierProvider(create: (_)=> NewStudentProvider())
+        ChangeNotifierProvider(create: (_) => NewStudentProvider()),
+        ChangeNotifierProvider(create: (_) => EditStudentProvider()),
       ],
       child: MaterialApp(
         navigatorKey: NavigationService.instance.navigationKey,
         title: 'Student Management',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData.dark(
+        darkTheme: ThemeData.dark(
+          useMaterial3: true,
+        ),
+        theme: ThemeData(
+          appBarTheme: AppBarTheme(
+              backgroundColor: Colors.grey[300],
+              surfaceTintColor: Colors.grey[300]),
+          scaffoldBackgroundColor: Colors.grey[300],
           useMaterial3: true,
         ),
         home: const SplashScreen(),
