@@ -1,0 +1,151 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:student_management_provider/core/constants.dart';
+import 'package:student_management_provider/presentation/provider/student/new_student_provider.dart';
+
+class StudentImagePickerWidget extends StatefulWidget {
+  const StudentImagePickerWidget({
+    super.key,
+    required this.size,
+  });
+
+  final Size size;
+
+  @override
+  State<StudentImagePickerWidget> createState() =>
+      _StudentImagePickerWidgetState();
+}
+
+class _StudentImagePickerWidgetState extends State<StudentImagePickerWidget> {
+  File? selectedImage;
+
+  void setImage(File image) {
+    setState(() {
+      selectedImage = image;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<NewStudentProvider>(builder: (context, provider, _) {
+      return SizedBox(
+        width: widget.size.width,
+        height: widget.size.height * .3,
+        child: GestureDetector(
+          onTap: () async {
+            XFile? img =
+                await ImagePicker().pickImage(source: ImageSource.gallery);
+            provider.setImage(img);
+          },
+          child: Stack(
+            children: [
+              SizedBox(
+                width: widget.size.width,
+                child: Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      boxShadow: Theme.of(context).brightness == Brightness.dark
+                          ? boxShadowBlack
+                          : boxShadowWhite,
+                      color: Colors.grey[300],
+                      shape: BoxShape.circle,
+                    ),
+                    child: CircleAvatar(
+                      radius: 90,
+                      backgroundImage: provider.profileImgPath != null
+                          ? FileImage(File(provider.profileImgPath!))
+                          : null,
+                      child: provider.profileImgPath == null
+                          ? const Icon(Icons.add_a_photo,
+                              size: 50, color: Colors.white)
+                          : null,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 30,
+                left: 0,
+                right: -100,
+                child: Container(
+                  decoration: Theme.of(context).brightness == Brightness.dark
+                      ? boxDecorCircle
+                      : boxDecorCircleWhite,
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Icon(
+                      Icons.person_add,
+                      size: 30.0,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+}
+
+
+
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:student_management_provider/domain/models/student_model/student_model.dart';
+import 'package:student_management_provider/domain/repository/student_repository/student_repository.dart';
+
+class NewStudentProvider extends ChangeNotifier {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final nameController = TextEditingController();
+  final courseController = TextEditingController();
+  final phonNumController = TextEditingController();
+  final addressController = TextEditingController();
+  final ageController = TextEditingController();
+  final placeController = TextEditingController();
+  final pincodeController = TextEditingController();
+  String? profileImgPath;
+  XFile? image;
+
+  void setImage(XFile? img) {
+    image = img;
+    profileImgPath = img?.path;
+    notifyListeners();
+  }
+
+  void clearImage() {
+    image = null;
+    profileImgPath = null;
+    notifyListeners();
+  }
+
+  bool get isValidForm => formKey.currentState?.validate() ?? false;
+
+  DatabaseHelper dataBaseHelper = DatabaseHelper();
+
+  Future<void> addStudent() async {
+    final studentInfo = StudentModel(
+        image: profileImgPath ?? "",
+        name: nameController.text,
+        age: int.parse(ageController.text),
+        course: courseController.text,
+        phoneNumber: int.parse(phonNumController.text),
+        pincode: int.parse(pincodeController.text),
+        place: placeController.text);
+
+    if (isValidForm) {
+      try {
+        await dataBaseHelper.insertStudent(studentInfo);
+        // Handle successful addition (e.g., show a success message, navigate to a different screen)
+      } catch (e) {
+        // Handle errors (e.g., show an error message)
+        print('Error adding student: $e');
+      }
+    } else {
+      // Handle validation errors (e.g., show error messages for required fields)
+    }
+  }
+}

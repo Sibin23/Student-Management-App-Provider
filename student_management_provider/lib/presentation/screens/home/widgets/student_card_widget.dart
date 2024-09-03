@@ -1,15 +1,20 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:student_management_provider/core/constants.dart';
+import 'package:student_management_provider/domain/models/student_model/student_model.dart';
 import 'package:student_management_provider/presentation/screens/profile/screen_profile.dart';
 
 class StudentCardWidget extends StatelessWidget {
   const StudentCardWidget({
     super.key,
     required this.size,
-    required this.index,
+   
+    required this.student,
   });
-  final int index;
+  
   final Size size;
+  final StudentModel student;
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +23,9 @@ class StudentCardWidget extends StatelessWidget {
           context,
           MaterialPageRoute(
               builder: (ctx) => ScreenProfile(
-                  name: 'Sibin Sebastian',
-                  tag: 'tag-studentImage-$index',
-                  imageUrl: 'assets/student_list.png'))),
+                    student: student,
+                    tag: 'tag-studentImage-${student.id}',
+                  ))),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
@@ -40,19 +45,19 @@ class StudentCardWidget extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8)),
                   width: size.width,
                   height: size.height * .09,
-                  child: const Padding(
+                  child: Padding(
                     padding: EdgeInsets.only(left: 8, right: 8, top: 15),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Sibin Sebastian',
-                          style: TextStyle(fontSize: 20),
+                          student.name,
+                          style: const TextStyle(fontSize: 20),
                         ),
                         Text(
-                          'Flutter',
-                          style: TextStyle(fontSize: 18),
+                          student.course,
+                          style: const TextStyle(fontSize: 18),
                         )
                       ],
                     ),
@@ -64,13 +69,13 @@ class StudentCardWidget extends StatelessWidget {
                 left: 0,
                 right: 0,
                 child: Hero(
-                  tag: 'tag-studentImage-$index',
+                  tag: 'tag-studentImage-${student.id}',
                   child: SizedBox(
                     width: size.width,
                     height: size.height * .15,
-                    child: Image.asset(
-                      'assets/student_list.png',
-                    ),
+                    child: student.image.isEmpty
+                        ? Image.asset('assets/student_img.png')
+                        : Image(image: FileImage(File(student.image))),
                   ),
                 ),
               ),

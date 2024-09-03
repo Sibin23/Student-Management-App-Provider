@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:student_management_provider/core/colors.dart';
 
 const h10 = SizedBox(height: 10);
 const h5 = SizedBox(height: 5);
@@ -10,13 +11,13 @@ const w20 = SizedBox(width: 20);
 
 final boxShadowBlack = [
   const BoxShadow(
-    color: Colors.black,
+    color: black,
     offset: Offset(5, 5),
     blurRadius: 15,
     spreadRadius: 1,
   ),
   BoxShadow(
-    color: Colors.grey.shade800,
+    color: grey800,
     offset: const Offset(-3, -3),
     blurRadius: 15,
     spreadRadius: 1,
@@ -24,13 +25,13 @@ final boxShadowBlack = [
 ];
 final boxShadowWhite = [
   BoxShadow(
-    color: Colors.grey.shade300,
+    color: greyBackground,
     offset: const Offset(5, 5),
     blurRadius: 15,
     spreadRadius: 1,
   ),
   const BoxShadow(
-    color: Colors.white,
+    color: white,
     offset: Offset(-5, -5),
     blurRadius: 15,
     spreadRadius: 1,
@@ -47,7 +48,7 @@ final boxDecorCircle = BoxDecoration(
       spreadRadius: 1,
     ),
     BoxShadow(
-      color: Colors.grey.shade800,
+      color: grey800,
       offset: const Offset(-3, -3),
       blurRadius: 15,
       spreadRadius: 1,

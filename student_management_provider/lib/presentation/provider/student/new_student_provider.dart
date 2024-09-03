@@ -1,63 +1,94 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:student_management_provider/domain/models/student_model/student_model.dart';
-import 'package:student_management_provider/domain/repository/student_repository/student_repository.dart';
+import 'package:student_management_provider/domain/db/student_db.dart';
+import 'package:student_management_provider/presentation/provider/student/student_list_provider.dart';
 
 class NewStudentProvider extends ChangeNotifier {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
-  final stdController = TextEditingController();
-  final phonNumController = TextEditingController();
+  final courseController = TextEditingController();
+  final phoneNumController = TextEditingController();
   final addressController = TextEditingController();
-  File? studentImagePath;
+  final ageController = TextEditingController();
+  final placeController = TextEditingController();
+  final pincodeController = TextEditingController();
+  String? profileImgPath;
+  XFile? image;
 
-  bool get isValidForm => formKey.currentState?.validate() ?? false;
-
-  DataBaseHelper dataBaseHelper = DataBaseHelper();
-
-  Future<void> pickImage() async {
-    final status = await Permission.storage.request();
-    if (status.isGranted) {
-      // Proceed with image picking
-      _pickImageFromGallery();
-    } else {
-      // Handle permission denial gracefully, e.g., show a snackbar
-      print('Storage permission denied');
-    }
+  setImage(XFile? img) {
+    image = img;
+    profileImgPath = img?.path;
+    print(profileImgPath);
+    notifyListeners();
+    print("profileeeeee $profileImgPath");
   }
 
-  Future<void> _pickImageFromGallery() async {
-    final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedImage != null) 
- {
-      studentImagePath = File(pickedImage.path);
-      notifyListeners();
-    }
+  void clearImage() {
+    image = null;
+    profileImgPath = null;
+    notifyListeners();
   }
 
-  Future<void> addStudent() async {
-    final info = StudentModel(
-      image: studentImagePath?.path ?? "",
-      name: nameController.text,
-      std: stdController.text,
-      phoneNumber: phonNumController.text,
-      address: addressController.text,
-    );
+  Future<void> pickImage(BuildContext context) async {
+    final XFile? pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
 
-    if (isValidForm) {
+    setImage(pickedImage);
+  }
+
+  Future<void> validateForm(BuildContext context) async {
+    if (formKey.currentState!.validate()) {
       try {
-        await dataBaseHelper.addNewStudent(info);
-        // Handle successful addition (e.g., show a success message, navigate to a different screen)
+        await addStudent(context);
       } catch (e) {
-        // Handle errors (e.g., show an error message)
-        print('Error adding student: $e');
+        print("printing validation error $e");
       }
-    } else {
-      // Handle validation errors (e.g., show error messages for required fields)
     }
+  }
+
+  DatabaseHelper dataBaseHelper = DatabaseHelper();
+
+  Future<void> addStudent(BuildContext context) async {
+    try {
+      print("path while adding $profileImgPath");
+      final studentInfo = StudentModel(
+        image: profileImgPath ?? '',
+        name: nameController.text.trim(),
+        age: int.parse(ageController.text.trim()),
+        course: courseController.text.trim(),
+        phoneNumber: int.parse(phoneNumController.text.trim()),
+        pincode: int.parse(pincodeController.text.trim()),
+        address: addressController.text.trim(),
+        place: placeController.text.trim(),
+      );
+
+      // Call the updated insertStudent method from DatabaseHelper
+      await dataBaseHelper.insertStudent(studentInfo);
+
+      final studentListProvider =
+          Provider.of<StudentListProvider>(context, listen: false);
+      studentListProvider.refreshStudentList(); // Call refresh method
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Student added successfully')),
+      );
+      Navigator.pop(context);
+    } catch (e) {
+      print('Error adding student: $e');
+    } finally {
+      clearForm();
+    }
+  }
+
+  void clearForm() {
+    nameController.clear();
+    courseController.clear();
+    phoneNumController.clear();
+    addressController.clear();
+    ageController.clear();
+    placeController.clear();
+    pincodeController.clear();
+    clearImage(); // Clear image data as well
   }
 }
-

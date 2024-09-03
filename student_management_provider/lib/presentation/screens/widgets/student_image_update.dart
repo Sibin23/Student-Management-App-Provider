@@ -1,28 +1,26 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:student_management_provider/core/colors.dart';
 import 'package:student_management_provider/core/constants.dart';
-import 'package:student_management_provider/presentation/provider/student/new_student_provider.dart';
+import 'package:student_management_provider/presentation/provider/student/edit_student_provider.dart';
 
-class StudentImagePickerWidget extends StatelessWidget {
-  const StudentImagePickerWidget({super.key, required this.size});
+class StudentImageUpdate extends StatelessWidget {
+  const StudentImageUpdate({super.key, required this.size});
 
   final Size size;
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<NewStudentProvider>(builder: (context, provider, _) {
+    final viewmodel = Provider.of<EditStudentProvider>(context);
+    return Consumer<EditStudentProvider>(builder: (context, provider, _) {
       return SizedBox(
         width: size.width,
         height: size.height * .3,
         child: GestureDetector(
-          onTap: () async {
-            final XFile? pickedImage =
-                await ImagePicker().pickImage(source: ImageSource.gallery);
-            provider.setImage(pickedImage);
+          onTap: () {
+            viewmodel.pickImage(context);
           },
           child: Stack(
             children: [
@@ -43,10 +41,10 @@ class StudentImagePickerWidget extends StatelessWidget {
                               ? grey900
                               : greyBackground,
                       radius: 120,
-                      backgroundImage: provider.profileImgPath != null
-                          ? FileImage(File(provider.profileImgPath!))
+                      backgroundImage: viewmodel.profileImgPath != null
+                          ? FileImage(File(viewmodel.profileImgPath!))
                           : null,
-                      child: provider.profileImgPath == null
+                      child: viewmodel.profileImgPath == null
                           ? const Icon(
                               Icons.add_a_photo,
                               size: 50,

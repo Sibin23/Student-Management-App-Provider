@@ -1,37 +1,64 @@
-
+import 'dart:typed_data';
+import 'package:student_management_provider/domain/db/student_db.dart';
 
 class StudentModel {
-  int? id;
-  final String image;
+  final int? id;
   final String name;
-  final String std;
-  final String phoneNumber;
+  final int age;
+  final String place;
+  final String course;
+  final String image;
+  final int phoneNumber;
   final String address;
-  StudentModel(
-      {this.id = 0,
-      required this.image,
-      required this.name,
-      required this.std,
-      required this.phoneNumber,
-      required this.address});
+  final int pincode;
 
-  factory StudentModel.fromMap(Map<String, dynamic> map) {
-    return StudentModel(
-      id: map['id'],
-      image: map['image'] as String,
-      name: map['name'] as String,
-      std: map['standard'] as String,
-      phoneNumber: map['phoneNumber'] as String,
-      address: map['address'] as String,
-    );
+  StudentModel({
+    this.id,
+    required this.address,
+    required this.name,
+    required this.age,
+    required this.place,
+    required this.course,
+    required this.image,
+    required this.phoneNumber,
+    required this.pincode,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      DatabaseHelper.columnId: id,
+      DatabaseHelper.columnName: name,
+      DatabaseHelper.columnAge: age,
+      DatabaseHelper.columnPlace: place,
+      DatabaseHelper.columnCourse: course,
+      DatabaseHelper.columnImage: image,
+      DatabaseHelper.columnPhone: phoneNumber,
+      DatabaseHelper.columnPincode: pincode,
+      DatabaseHelper.columnAddress: address
+    };
   }
 
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'image': image,
-        'name': name,
-        'standard': std,
-        'phoneNumber': phoneNumber,
-        'address': address,
-      };
+  StudentModel copyWith({
+    int? id,
+    String? name,
+    int? age,
+    String? place,
+    String? course,
+    String? image,
+    int? phoneNumber,
+    String? address,
+    int? pincode,
+  }) {
+    return StudentModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      age: age ?? this.age,
+      place: place ?? this.place,
+      course: course ?? this.course,
+      image: image ?? this.image,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      address: address ?? this.address,
+      pincode: pincode ?? this.pincode,
+    );
+  }
 }

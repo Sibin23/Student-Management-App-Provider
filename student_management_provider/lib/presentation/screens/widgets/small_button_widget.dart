@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:student_management_provider/core/colors.dart';
 import 'package:student_management_provider/core/constants.dart';
 
 class SmallButtonWidget extends StatelessWidget {
@@ -20,18 +20,26 @@ class SmallButtonWidget extends StatelessWidget {
     return SizedBox(
       width: size.width,
       child: GestureDetector(
-        onTap: ()=> voidCallback(),
+        onTap: () => voidCallback(),
         child: Center(
           child: Container(
             width: size.width * .4,
             height: 60,
-            decoration: Theme.of(context).brightness == Brightness.dark
-                ? boxDecoration
-                : boxDecorationWhite,
+            decoration: BoxDecoration(
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? grey900
+                    : greyBackground,
+                boxShadow: Theme.of(context).brightness == Brightness.dark
+                    ? boxShadowBlack
+                    : boxShadowWhite,
+                borderRadius: BorderRadius.circular(8)),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(icon,size: 30,),
+                Icon(
+                  icon,
+                  size: 30,
+                ),
                 w10,
                 Text(
                   title,

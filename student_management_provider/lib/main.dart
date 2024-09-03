@@ -4,9 +4,10 @@ import 'package:student_management_provider/core/navigation/navigation_service.d
 import 'package:student_management_provider/presentation/provider/splash_screen/splash_screen_provider.dart';
 import 'package:student_management_provider/presentation/provider/student/edit_student_provider.dart';
 import 'package:student_management_provider/presentation/provider/student/new_student_provider.dart';
+import 'package:student_management_provider/presentation/provider/student/student_list_provider.dart';
 import 'package:student_management_provider/presentation/screens/splash/splash_screen.dart';
 
-void main()  {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<SplashScreenProvider>(
             create: (_) => SplashScreenProvider()),
+        ChangeNotifierProvider(create: (_) => StudentListProvider()),
         ChangeNotifierProvider(create: (_) => NewStudentProvider()),
         ChangeNotifierProvider(create: (_) => EditStudentProvider()),
       ],
