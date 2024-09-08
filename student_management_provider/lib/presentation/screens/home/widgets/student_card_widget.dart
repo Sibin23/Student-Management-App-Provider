@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:student_management_provider/core/colors.dart';
 import 'package:student_management_provider/core/constants.dart';
 import 'package:student_management_provider/domain/models/student_model/student_model.dart';
 import 'package:student_management_provider/presentation/screens/profile/screen_profile.dart';
@@ -9,10 +10,9 @@ class StudentCardWidget extends StatelessWidget {
   const StudentCardWidget({
     super.key,
     required this.size,
-   
     required this.student,
   });
-  
+
   final Size size;
   final StudentModel student;
 
@@ -29,9 +29,15 @@ class StudentCardWidget extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
-          decoration: Theme.of(context).brightness == Brightness.dark
-              ? boxDecoration
-              : boxDecorationWhite,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Theme.of(context).brightness == Brightness.dark
+                ? grey900
+                : greyBackground,
+            boxShadow: Theme.of(context).brightness == Brightness.dark
+                ? boxShadowBlack
+                : boxShadowWhite,
+          ),
           width: size.width,
           child: Stack(
             children: [

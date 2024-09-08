@@ -1,15 +1,17 @@
-import 'dart:io';
-
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:student_management_provider/core/colors.dart';
 import 'package:student_management_provider/core/constants.dart';
 import 'package:student_management_provider/core/navigation/navigation_service.dart';
 import 'package:student_management_provider/domain/models/student_model/student_model.dart';
 import 'package:student_management_provider/presentation/provider/student/student_list_provider.dart';
 import 'package:student_management_provider/presentation/screens/edit_student/edit_student.dart';
+import 'package:student_management_provider/presentation/screens/profile/widget/profile_image_widget.dart';
 import 'package:student_management_provider/presentation/screens/widgets/small_button_widget.dart';
+
+import '../../provider/student/edit_student_provider.dart';
 
 class ScreenProfile extends StatelessWidget {
   const ScreenProfile({
@@ -22,17 +24,19 @@ class ScreenProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    print(" student id is ${student.id}");
     return Scaffold(
         appBar: AppBar(
+          surfaceTintColor: Theme.of(context).brightness == Brightness.dark
+              ? grey900
+              : greyBackground,
           toolbarHeight: 60,
           centerTitle: true,
-          title: const Text('Student Profile'),
+          title: FadeInDown(child: const Text('Student Profile')),
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 20),
-              child: FadeIn(
-                duration: const Duration(milliseconds: 1800),
+              child: FadeInRight(
+                duration: const Duration(milliseconds: 1400),
                 child: Consumer<StudentListProvider>(
                     builder: (context, viewmodel, _) {
                   return GestureDetector(
@@ -45,7 +49,7 @@ class ScreenProfile extends StatelessWidget {
                           const SnackBar(
                               content: Text('Student deleted successfully')),
                         );
-                      NavigationService.instance.goBack();
+                        NavigationService.instance.goBack();
                       });
                     },
                     child: Container(
@@ -73,22 +77,7 @@ class ScreenProfile extends StatelessWidget {
           child: ListView(
             children: [
               h20,
-              SizedBox(
-                width: size.width,
-                height: size.height * .3,
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  decoration: Theme.of(context).brightness == Brightness.dark
-                      ? boxDecorCircle
-                      : boxDecorCircleWhite,
-                  child: Hero(
-                      tag: tag,
-                      child: student.image.isEmpty
-                          ? Image.asset('assets/student_img.png')
-                          : Image(image: FileImage(File(student.image)))),
-                ),
-              ),
+              ProfileImageWidget(size: size, tag: tag, student: student),
               h20,
               Text(
                 'Name:',

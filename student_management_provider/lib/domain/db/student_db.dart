@@ -111,7 +111,16 @@ class DatabaseHelper {
     final db = await database;
     return db.update(
       table,
-      student.toMap(),
+      {
+        columnName: student.name,
+        columnAge: student.age,
+        columnPlace: student.place,
+        columnCourse: student.course,
+        columnImage: student.image,
+        columnPhone: student.phoneNumber,
+        columnAddress: student.address,
+        columnPincode: student.pincode,
+      },
       where: '$columnId = ?',
       whereArgs: [student.id],
     );

@@ -6,6 +6,7 @@ import 'package:student_management_provider/core/constants.dart';
 import 'package:student_management_provider/core/navigation/navigation_service.dart';
 import 'package:student_management_provider/presentation/provider/student/student_list_provider.dart';
 import 'package:student_management_provider/presentation/screens/add_student/add_student.dart';
+import 'package:student_management_provider/presentation/screens/widgets/iconbutton_widget.dart';
 
 class HomeAppBarWidget extends StatelessWidget {
   const HomeAppBarWidget({
@@ -58,22 +59,11 @@ class HomeAppBarWidget extends StatelessWidget {
               w20,
               FadeInLeftBig(
                 duration: const Duration(milliseconds: 1800),
-                child: GestureDetector(
-                  onTap: () =>
-                      NavigationService.instance.navigate(const AddStudent()),
-                  child: Container(
-                    decoration: Theme.of(context).brightness == Brightness.dark
-                        ? boxDecorCircle
-                        : boxDecorCircleWhite,
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Icon(
-                        Icons.person_add,
-                        size: 30.0,
-                      ),
-                    ),
-                  ),
-                ),
+                child: IconbuttonWidget(
+                    voidCallback: () =>
+                        NavigationService.instance.navigate(const AddStudent()),
+                    icon: Icons.person_add,
+                    iconsize: 30.0),
               ),
               w10
             ],

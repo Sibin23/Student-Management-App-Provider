@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:student_management_provider/domain/db/student_db.dart';
 
 class StudentModel {
