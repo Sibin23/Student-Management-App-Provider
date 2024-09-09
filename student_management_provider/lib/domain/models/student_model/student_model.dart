@@ -2,7 +2,7 @@ import 'package:student_management_provider/domain/db/student_db.dart';
 
 class StudentModel {
   final int? id;
-  final String name;
+  late final String name;
   final int age;
   final String place;
   final String course;
@@ -42,7 +42,7 @@ class StudentModel {
     String? name,
     int? age,
     String? place,
-    String? course,
+    String? course,               
     String? image,
     int? phoneNumber,
     String? address,

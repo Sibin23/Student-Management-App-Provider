@@ -4,27 +4,40 @@ import 'package:provider/provider.dart';
 import 'package:student_management_provider/core/constants.dart';
 import 'package:student_management_provider/domain/models/student_model/student_model.dart';
 import 'package:student_management_provider/presentation/provider/student/edit_student_provider.dart';
+import 'package:student_management_provider/presentation/provider/student/student_list_provider.dart';
 import 'package:student_management_provider/presentation/screens/widgets/custom_textfield_widget.dart';
 import 'package:student_management_provider/presentation/screens/widgets/small_button_widget.dart';
 
 import '../widgets/student_image_update.dart';
 
-class EditStudent extends StatelessWidget {
+class EditStudent extends StatefulWidget {
   final StudentModel student;
-  EditStudent({super.key, required this.student});
+  const EditStudent({super.key, required this.student});
 
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  late TextEditingController nameController = TextEditingController();
-  late TextEditingController courseController = TextEditingController();
-  late TextEditingController phoneNumController = TextEditingController();
-  late TextEditingController addressController = TextEditingController();
-  late TextEditingController ageController = TextEditingController();
-  late TextEditingController placeController = TextEditingController();
-  late TextEditingController pincodeController = TextEditingController();
   @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final viewModel = Provider.of<EditStudentProvider>(context);
+  State<EditStudent> createState() => _EditStudentState();
+}
+
+class _EditStudentState extends State<EditStudent> {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController courseController = TextEditingController();
+  final TextEditingController phoneNumController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
+  final TextEditingController ageController = TextEditingController();
+  final TextEditingController placeController = TextEditingController();
+  final TextEditingController pincodeController = TextEditingController();
+  final provider = StudentListProvider();
+  int? id;
+  @override
+  void initState() {
+    assignStudentValues(widget.student);
+    super.initState();
+  }
+
+  void assignStudentValues(StudentModel student) {
+    id = student.id;
+    // provider.profileImgPath = student.image;
     nameController.text = student.name;
     courseController.text = student.course;
     phoneNumController.text = student.phoneNumber.toString();
@@ -32,6 +45,12 @@ class EditStudent extends StatelessWidget {
     ageController.text = student.age.toString();
     placeController.text = student.place;
     pincodeController.text = student.pincode.toString();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final viewModel = Provider.of<EditStudentProvider>(context);
     return Builder(builder: (context) {
       return Scaffold(
           appBar: AppBar(
@@ -50,7 +69,7 @@ class EditStudent extends StatelessWidget {
                           children: [
                             FadeInDown(
                               child: StudentImageUpdate(
-                                imageUrl: student.image,
+                                imageUrl: widget.student.image,
                                 size: size,
                               ),
                             ),
@@ -58,10 +77,11 @@ class EditStudent extends StatelessWidget {
                             FadeInLeft(
                               child: CustomTextFieldWidget(
                                   validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Please enter a name.';
+                                    if (value == null || value.isEmpty) {
+                                      return 'Enter Student Name';
+                                    } else {
+                                      return null;
                                     }
-                                    return null;
                                   },
                                   size: size,
                                   hint: 'Name',
@@ -72,10 +92,11 @@ class EditStudent extends StatelessWidget {
                             FadeInRight(
                               child: CustomTextFieldWidget(
                                   validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Please enter a course.';
+                                    if (value == null || value.isEmpty) {
+                                      return 'Enter Course Name';
+                                    } else {
+                                      return null;
                                     }
-                                    return null;
                                   },
                                   size: size,
                                   hint: 'Course',
@@ -89,10 +110,11 @@ class EditStudent extends StatelessWidget {
                                   child: FadeInLeft(
                                     child: CustomTextFieldWidget(
                                         validator: (value) {
-                                          if (value!.isEmpty) {
-                                            return 'Please add age.';
+                                          if (value == null || value.isEmpty) {
+                                            return 'Enter Age';
+                                          } else {
+                                            return null;
                                           }
-                                          return null;
                                         },
                                         size: size,
                                         hint: 'Age',
@@ -105,8 +127,11 @@ class EditStudent extends StatelessWidget {
                                   child: FadeInRight(
                                     child: CustomTextFieldWidget(
                                         validator: (value) {
-                                          if (value!.isEmpty) {
+                                          if (value.isEmpty || value == null) {
                                             return 'Please enter a Phone no.';
+                                          }
+                                          if (value.toString().length < 10) {
+                                            return 'Please enter a valid phone.no';
                                           }
                                           return null;
                                         },
@@ -122,7 +147,7 @@ class EditStudent extends StatelessWidget {
                             FadeInLeft(
                               child: CustomTextFieldWidget(
                                   validator: (value) {
-                                    if (value!.isEmpty) {
+                                    if (value.isEmpty || value == null) {
                                       return 'Please enter a Adress.';
                                     }
                                     return null;
@@ -140,7 +165,7 @@ class EditStudent extends StatelessWidget {
                                   child: FadeInLeft(
                                     child: CustomTextFieldWidget(
                                         validator: (value) {
-                                          if (value!.isEmpty) {
+                                          if (value.isEmpty || value == null) {
                                             return 'Please enter a Place.';
                                           }
                                           return null;
@@ -156,8 +181,11 @@ class EditStudent extends StatelessWidget {
                                   child: FadeInRight(
                                     child: CustomTextFieldWidget(
                                         validator: (value) {
-                                          if (value!.isEmpty) {
+                                          if (value.isEmpty || value == null) {
                                             return 'Please enter a Pincode.';
+                                          }
+                                          if (value.toString().length < 6) {
+                                            return 'Please enter a Valid Pincode';
                                           }
                                           return null;
                                         },
@@ -172,12 +200,34 @@ class EditStudent extends StatelessWidget {
                             h20,
                             h30,
                             FadeInUp(
-                              child: SmallButtonWidget(
-                                  size: size,
-                                  icon: Icons.save,
-                                  title: 'Save',
-                                  voidCallback: () {}),
-                            ),
+                                child: SmallButtonWidget(
+                                    size: size,
+                                    icon: Icons.save,
+                                    title: 'Save',
+                                    voidCallback: () {
+                                      if (formKey.currentState!.validate()) {
+                                        final info = StudentModel(
+                                            id: widget.student.id,
+                                            address:
+                                                addressController.text.trim(),
+                                            name: nameController.text.trim(),
+                                            age: int.parse(
+                                                ageController.text.trim()),
+                                            place: placeController.text.trim(),
+                                            course:
+                                                courseController.text.trim(),
+                                            phoneNumber: int.parse(
+                                                phoneNumController.text.trim()),
+                                            image: viewModel.profileImgPath ??
+                                                widget.student.image,
+                                            pincode: int.parse(
+                                                pincodeController.text.trim()));
+                                        viewModel.studentModel = info;
+                                        context
+                                            .read<EditStudentProvider>()
+                                            .validateForm(context, info);
+                                      }
+                                    })),
                             h30,
                           ],
                         ),

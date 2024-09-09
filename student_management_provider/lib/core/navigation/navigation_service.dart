@@ -9,9 +9,11 @@ class NavigationService {
     navigationKey = GlobalKey<NavigatorState>();
   }
 
-  navigate(Widget rn) {
+  navigate(Widget rn,[ VoidCallback? voidCallback]) {
     navigationKey.currentState!
-        .push(MaterialPageRoute(builder: (context) => rn));
+        .push(MaterialPageRoute(builder: (context) => rn)).then((value) {
+          voidCallback!();
+        },);
   }
 
   navigateUntil(Widget screen) {

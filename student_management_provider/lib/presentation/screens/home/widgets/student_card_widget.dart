@@ -4,28 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:student_management_provider/core/colors.dart';
 import 'package:student_management_provider/core/constants.dart';
 import 'package:student_management_provider/domain/models/student_model/student_model.dart';
-import 'package:student_management_provider/presentation/screens/profile/screen_profile.dart';
 
 class StudentCardWidget extends StatelessWidget {
   const StudentCardWidget({
     super.key,
     required this.size,
-    required this.student,
+    required this.voidCallback, required this.student,
+  
   });
-
-  final Size size;
   final StudentModel student;
-
+  final Size size;
+  final VoidCallback voidCallback;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (ctx) => ScreenProfile(
-                    student: student,
-                    tag: 'tag-studentImage-${student.id}',
-                  ))),
+      onTap: () {
+        voidCallback();
+      },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
@@ -52,7 +47,7 @@ class StudentCardWidget extends StatelessWidget {
                   width: size.width,
                   height: size.height * .09,
                   child: Padding(
-                    padding: EdgeInsets.only(left: 8, right: 8, top: 15),
+                    padding: const EdgeInsets.only(left: 8, right: 8, top: 15),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,

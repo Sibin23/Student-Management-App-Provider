@@ -6,39 +6,53 @@ class StudentListProvider extends ChangeNotifier {
   late DatabaseHelper databaseHelper;
   List<StudentModel> students = [];
   List<StudentModel> filteredStudents = [];
+  StudentModel? fetchedStudent;
   bool noResult = false;
   bool isSearching = false;
-
+  bool closeSearch = false;
   StudentListProvider() {
     databaseHelper = DatabaseHelper();
     refreshStudentList();
   }
-  Future<void> fetchStudents() async {
-    students = await databaseHelper.getStudents();
-    notifyListeners(); // Notify listeners of data change
+  List<StudentModel> get student => students;
+
+  void setStudents(List<StudentModel> newStudents) {
+    students = newStudents;
+    notifyListeners();
   }
 
   void filterStudents(String query) {
-    final lowerCaseQuery = query.toLowerCase();
-    if (lowerCaseQuery.isEmpty) {
-      filteredStudents = List.from(students);
-      noResult = false;
+    if (query.isEmpty) {
+      filteredStudents = students;
     } else {
-      filteredStudents = students.where((student) {
-        return student.name.toLowerCase().contains(lowerCaseQuery);
-      }).toList();
-      noResult = filteredStudents.isEmpty;
+      filteredStudents = students
+          .where((student) =>
+              student.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
     }
     notifyListeners();
+  }
+
+  Future<StudentModel?> fetchStudents() async {
+    students = await databaseHelper.getStudents();
+    filteredStudents = students;
+    notifyListeners(); // Notify listeners of data change
+  }
+
+  StudentModel? fetchStudentById(int studentId) {
+    for (StudentModel student in students) {
+      if (student.id == studentId) {
+        fetchedStudent = student;
+      }
+    }
+    return null; // Return null if not found
   }
 
   Future<void> refreshStudentList() async {
     final studentList = await databaseHelper.getStudents();
     students = studentList;
     filteredStudents = students;
-    // Assuming you want to display all students after refresh
-    noResult = false;
-    notifyListeners(); // Notify listeners of data change
+    notifyListeners();
   }
 
   toggleSearch() {
@@ -49,26 +63,25 @@ class StudentListProvider extends ChangeNotifier {
     print(isSearching);
     notifyListeners();
   }
-final DatabaseHelper db = DatabaseHelper();
 
-Future<void> deleteStudent(int studentId, void Function() onDeleted) async {
-  try {
-    await db.deleteStudent(studentId);
-    await refreshStudentList(); // Refresh student list after deletion
-    onDeleted(); // Call the callback function to show the snackbar
-  } catch (e) {
-    print("Error deleting student: $e");
+  closeSearchBar() {
+    closeSearch = !closeSearch;
+    if (!closeSearch) {
+      filteredStudents = students;
+    }
+    print('closeSearch $closeSearch');
+    notifyListeners();
   }
-}
-  // void filterStudents(String query) {
-  //   if (query.isEmpty) {
-  //     filteredStudents = students;
-  //   } else {
-  //     filteredStudents = students
-  //         .where((student) =>
-  //             student.name.toLowerCase().contains(query.toLowerCase()))
-  //         .toList();
-  //   }
-  //   notifyListeners();
-  // }
+
+  final DatabaseHelper db = DatabaseHelper();
+
+  Future<void> deleteStudent(int studentId, void Function() onDeleted) async {
+    try {
+      await db.deleteStudent(studentId);
+      await refreshStudentList(); // Refresh student list after deletion
+      onDeleted(); // Call the callback function to show the snackbar
+    } catch (e) {
+      print("Error deleting student: $e");
+    }
+  }
 }

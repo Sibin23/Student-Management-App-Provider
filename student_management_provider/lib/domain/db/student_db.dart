@@ -61,11 +61,10 @@ class DatabaseHelper {
         columnAddress: student.address,
         columnPincode: student.pincode,
       });
-      print('Id is $id');
+
       return id;
     } catch (e) {
-      print("Error inserting student: $e");
-      return -1; // or any other error code you prefer
+      return -1;
     }
   }
 
@@ -73,7 +72,6 @@ class DatabaseHelper {
     try {
       final db = await database;
       final List<Map<String, dynamic>> maps = await db.query(table);
-      print(maps);
       List<StudentModel> students = List.generate(
           maps.length,
           (index) => StudentModel(
@@ -87,13 +85,8 @@ class DatabaseHelper {
                 address: maps[index][columnAddress],
                 pincode: maps[index][columnPincode],
               ));
-      print("Generated list of students:");
-      for (var student in students) {
-        print(student);
-      }
       return students;
     } catch (e) {
-      print("Error fetching students: $e");
       return [];
     }
   }

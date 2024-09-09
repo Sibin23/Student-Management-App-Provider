@@ -21,9 +21,21 @@ class ScreenProfile extends StatelessWidget {
   });
   final String tag;
   final StudentModel student;
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final viewModel = Provider.of<StudentListProvider>(context);
+    viewModel.fetchStudentById(student.id!);
+    String address = viewModel.fetchedStudent!.address.isNotEmpty
+        ? viewModel.fetchedStudent!.address
+        : student.address;
+    String place = viewModel.fetchedStudent!.place.isNotEmpty
+        ? viewModel.fetchedStudent!.place
+        : student.place;
+    String pinCode = viewModel.fetchedStudent!.pincode.toString().isNotEmpty
+        ? viewModel.fetchedStudent!.pincode.toString()
+        : student.pincode.toString();
     return Scaffold(
         appBar: AppBar(
           surfaceTintColor: Theme.of(context).brightness == Brightness.dark
@@ -38,13 +50,13 @@ class ScreenProfile extends StatelessWidget {
               child: FadeInRight(
                 duration: const Duration(milliseconds: 1400),
                 child: Consumer<StudentListProvider>(
-                    builder: (context, viewmodel, _) {
+                    builder: (context, provider, _) {
                   return GestureDetector(
                     onTap: () {
                       // context
                       //     .read<StudentListProvider>()
                       //     .deleteStudent(student.id!);
-                      viewmodel.deleteStudent(student.id!, () {
+                      provider.deleteStudent(student.id!, () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                               content: Text('Student deleted successfully')),
@@ -77,7 +89,7 @@ class ScreenProfile extends StatelessWidget {
           child: ListView(
             children: [
               h20,
-              ProfileImageWidget(size: size, tag: tag, student: student),
+              ProfileImageWidget(size: size, tag: tag, imageUrl: student.image),
               h20,
               Text(
                 'Name:',
@@ -85,7 +97,9 @@ class ScreenProfile extends StatelessWidget {
               ),
               h10,
               Text(
-                student.name,
+                viewModel.fetchedStudent!.name.isNotEmpty
+                    ? viewModel.fetchedStudent!.name
+                    : student.name,
                 style: GoogleFonts.roboto(fontSize: 20),
               ),
               h20,
@@ -95,7 +109,9 @@ class ScreenProfile extends StatelessWidget {
               ),
               h10,
               Text(
-                student.course,
+                viewModel.fetchedStudent!.course.isNotEmpty
+                    ? viewModel.fetchedStudent!.course
+                    : student.course,
                 style: GoogleFonts.roboto(fontSize: 20),
               ),
               h20,
@@ -105,7 +121,9 @@ class ScreenProfile extends StatelessWidget {
               ),
               h10,
               Text(
-                student.phoneNumber.toString(),
+                viewModel.fetchedStudent!.phoneNumber.toString().isNotEmpty
+                    ? viewModel.fetchedStudent!.phoneNumber.toString()
+                    : student.phoneNumber.toString(),
                 style: GoogleFonts.roboto(fontSize: 20),
               ),
               h20,
@@ -115,19 +133,24 @@ class ScreenProfile extends StatelessWidget {
               ),
               h10,
               Text(
-                "${student.address}, ${student.place}, ${student.pincode}",
+                "$address, $place, $pinCode",
                 style: GoogleFonts.roboto(fontSize: 20),
               ),
               h30,
-              SmallButtonWidget(
-                  size: size,
-                  icon: Icons.edit,
-                  title: 'Edit',
-                  voidCallback: () {
-                    NavigationService.instance.navigate(EditStudent(
-                      student: student,
-                    ));
-                  }),
+              Consumer<EditStudentProvider>(builder: (context, provider, _) {
+                return SmallButtonWidget(
+                    size: size,
+                    icon: Icons.edit,
+                    title: 'Edit',
+                    voidCallback: () {
+                      NavigationService.instance.navigate(
+                        EditStudent(
+                          student: student,
+                        ),
+                        () => viewModel.refreshStudentList(),
+                      );
+                    });
+              }),
               h30,
             ],
           ),
