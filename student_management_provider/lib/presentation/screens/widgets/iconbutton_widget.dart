@@ -23,12 +23,14 @@ class IconbuttonWidget extends StatelessWidget {
         decoration: Theme.of(context).brightness == Brightness.dark
             ? boxDecorCircle
             : boxDecorCircleWhite,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Icon(
-            icon,
-            size: iconsize,
-            color: iconColor,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Icon(
+              icon,
+              size: iconsize,
+              color: iconColor,
+            ),
           ),
         ),
       ),

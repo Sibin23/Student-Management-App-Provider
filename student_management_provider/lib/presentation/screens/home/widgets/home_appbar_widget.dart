@@ -8,6 +8,7 @@ import 'package:student_management_provider/core/constants.dart';
 import 'package:student_management_provider/core/navigation/navigation_service.dart';
 import 'package:student_management_provider/presentation/provider/student/student_list_provider.dart';
 import 'package:student_management_provider/presentation/screens/add_student/add_student.dart';
+import 'package:student_management_provider/presentation/screens/home/widgets/search_list_widget.dart';
 import 'package:student_management_provider/presentation/screens/widgets/iconbutton_widget.dart';
 
 class HomeAppBarWidget extends StatelessWidget {
@@ -17,7 +18,6 @@ class HomeAppBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController searchController = TextEditingController();
     return Consumer<StudentListProvider>(builder: (context, studentList, _) {
       return AppBar(
         leading: Padding(
@@ -43,49 +43,48 @@ class HomeAppBarWidget extends StatelessWidget {
             children: [
               FadeInLeftBig(
                 duration: const Duration(milliseconds: 2000),
-                child: GestureDetector(
-                  onTap: () {
-                    studentList.toggleSearch();
-                    studentList.closeSearchBar();
-                  },
-                  child: Container(
-                    decoration: Theme.of(context).brightness == Brightness.dark
-                        ? boxDecorCircle
-                        : boxDecorCircleWhite,
-                    child: AnimSearchBar(
-                      searchIconColor:
-                          Theme.of(context).brightness == Brightness.dark
-                              ? white
-                              : grey900,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? grey900
-                          : greyBackground,
-                      helpText: 'Search here',
-                      style: GoogleFonts.roboto(fontSize: 18),
-                      width: 300,
-                      textController: searchController,
-                      textFieldIconColor:
-                          Theme.of(context).brightness == Brightness.dark
-                              ? greyBackground
-                              : grey900,
-                      textFieldColor:
-                          Theme.of(context).brightness == Brightness.dark
-                              ? grey900
-                              : greyBackground,
-                      onSubmitted: (query) {
-                        print(query);
-                        studentList.filterStudents(query);
-                      },
-                      animationDurationInMilli: 600,
-                      autoFocus: false,
-                      closeSearchOnSuffixTap: studentList.closeSearch,
-                      onSuffixTap: () {
-                        studentList.toggleSearch();
-                        studentList.closeSearchBar();
-                        searchController.clear();
-                      },
-                    ),
+                child: Container(
+                  decoration: Theme.of(context).brightness == Brightness.dark
+                      ? boxDecorCircle
+                      : boxDecorCircleWhite,
+                  child: IconButton(
+                    icon: const Icon(Icons.search),
+                    onPressed: () {
+                      NavigationService.instance.navigate(StudentSearchListWidget());
+                    },
                   ),
+                  // child: AnimSearchBar(
+
+                  //   searchIconColor:
+                  //       Theme.of(context).brightness == Brightness.dark
+                  //           ? white
+                  //           : grey900,
+                  //   color: Theme.of(context).brightness == Brightness.dark
+                  //       ? grey900
+                  //       : greyBackground,
+                  //   helpText: 'Search here',
+                  //   style: GoogleFonts.roboto(fontSize: 18),
+                  //   width: 300,
+                  //   textController: searchController,
+                  //   textFieldIconColor:
+                  //       Theme.of(context).brightness == Brightness.dark
+                  //           ? greyBackground
+                  //           : grey900,
+                  //   textFieldColor:
+                  //       Theme.of(context).brightness == Brightness.dark
+                  //           ? grey900
+                  //           : greyBackground,
+                  //   onSubmitted: (query) {
+                  //     print(query);
+                  //     studentList.filterStudents(query);
+                  //   },
+                  //   animationDurationInMilli: 600,
+                  //   autoFocus: false,
+                  //   closeSearchOnSuffixTap: true,
+                  //   onSuffixTap: () {
+                  //     searchController.clear();
+                  //   },
+                  // ),
                 ),
               ),
               w20,
@@ -94,7 +93,6 @@ class HomeAppBarWidget extends StatelessWidget {
                 child: IconbuttonWidget(
                     voidCallback: () => NavigationService.instance.navigate(
                           const AddStudent(),
-                          () {},
                         ),
                     icon: Icons.person_add,
                     iconsize: 30.0),

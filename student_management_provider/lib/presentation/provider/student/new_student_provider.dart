@@ -20,9 +20,7 @@ class NewStudentProvider extends ChangeNotifier {
   setImage(XFile? img) {
     image = img;
     profileImgPath = img?.path;
-    print(profileImgPath);
     notifyListeners();
-    print("profileeeeee $profileImgPath");
   }
 
   void clearImage() {
