@@ -1,9 +1,7 @@
-import 'package:anim_search_bar/anim_search_bar.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:student_management_provider/core/colors.dart';
 import 'package:student_management_provider/core/constants.dart';
 import 'package:student_management_provider/core/navigation/navigation_service.dart';
 import 'package:student_management_provider/presentation/provider/student/student_list_provider.dart';
@@ -20,20 +18,28 @@ class HomeAppBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<StudentListProvider>(builder: (context, studentList, _) {
       return AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            decoration: Theme.of(context).brightness == Brightness.dark
-                ? boxDecorCircle
-                : boxDecorCircleWhite,
-            child: const Center(
-              child: Icon(
-                Icons.menu,
-                size: 30.0,
-              ),
-            ),
-          ),
-        ),
+        // leading: Padding(
+        //   padding: const EdgeInsets.all(8.0),
+        //   child: InkWell(
+        //     onTap: () {
+        //       customSnackBar(
+        //         context,
+        //         'Added Successfully',
+        //       );
+        //     },
+        //     child: Container(
+        //       decoration: Theme.of(context).brightness == Brightness.dark
+        //           ? boxDecorCircle
+        //           : boxDecorCircleWhite,
+        //       child: const Center(
+        //         child: Icon(
+        //           Icons.menu,
+        //           size: 30.0,
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // ),
         title: Text(
           'Student Management',
           style: GoogleFonts.roboto(fontSize: 24),
@@ -50,7 +56,8 @@ class HomeAppBarWidget extends StatelessWidget {
                   child: IconButton(
                     icon: const Icon(Icons.search),
                     onPressed: () {
-                      NavigationService.instance.navigate(StudentSearchListWidget());
+                      NavigationService.instance
+                          .navigate(const StudentSearchListWidget());
                     },
                   ),
                   // child: AnimSearchBar(

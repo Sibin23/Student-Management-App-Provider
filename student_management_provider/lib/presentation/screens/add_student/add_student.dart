@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:student_management_provider/core/constants.dart';
+import 'package:student_management_provider/core/navigation/navigation_service.dart';
 import 'package:student_management_provider/presentation/provider/student/new_student_provider.dart';
+import 'package:student_management_provider/presentation/provider/student/student_list_provider.dart';
 import 'package:student_management_provider/presentation/screens/widgets/custom_textfield_widget.dart';
 import 'package:student_management_provider/presentation/screens/widgets/small_button_widget.dart';
 import 'package:student_management_provider/presentation/screens/widgets/student_imagepicker_widget.dart';
@@ -44,10 +46,11 @@ class AddStudent extends StatelessWidget {
                         FadeInLeft(
                           child: CustomTextFieldWidget(
                               validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Please enter a name.';
+                                if (value == null || value.isEmpty) {
+                                  return 'Enter Student Name';
+                                } else {
+                                  return null;
                                 }
-                                return null;
                               },
                               size: size,
                               hint: 'Name',
@@ -58,10 +61,11 @@ class AddStudent extends StatelessWidget {
                         FadeInRight(
                           child: CustomTextFieldWidget(
                               validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Please enter a course.';
+                                if (value == null || value.isEmpty) {
+                                  return 'Enter Course Name';
+                                } else {
+                                  return null;
                                 }
-                                return null;
                               },
                               size: size,
                               hint: 'Course',
@@ -75,10 +79,13 @@ class AddStudent extends StatelessWidget {
                               child: FadeInLeft(
                                 child: CustomTextFieldWidget(
                                     validator: (value) {
-                                      if (value!.isEmpty) {
-                                        return 'Please add age.';
+                                      if (value == null || value.isEmpty) {
+                                        return 'Enter Age';
+                                      } else if (value.toString().length > 2) {
+                                        return "Enter a  valid age";
+                                      } else {
+                                        return null;
                                       }
-                                      return null;
                                     },
                                     size: size,
                                     hint: 'Age',
@@ -91,8 +98,12 @@ class AddStudent extends StatelessWidget {
                               child: FadeInRight(
                                 child: CustomTextFieldWidget(
                                     validator: (value) {
-                                      if (value!.isEmpty) {
+                                      if (value.isEmpty || value == null) {
                                         return 'Please enter a Phone no.';
+                                      }
+                                      if (value.toString().length < 10 ||
+                                          value.toString().length > 10) {
+                                        return 'Please enter a valid phone.no';
                                       }
                                       return null;
                                     },
@@ -109,7 +120,7 @@ class AddStudent extends StatelessWidget {
                         FadeInLeft(
                           child: CustomTextFieldWidget(
                               validator: (value) {
-                                if (value!.isEmpty) {
+                                if (value.isEmpty || value == null) {
                                   return 'Please enter a Adress.';
                                 }
                                 return null;
@@ -127,7 +138,7 @@ class AddStudent extends StatelessWidget {
                               child: FadeInLeft(
                                 child: CustomTextFieldWidget(
                                     validator: (value) {
-                                      if (value!.isEmpty) {
+                                      if (value.isEmpty || value == null) {
                                         return 'Please enter a Place.';
                                       }
                                       return null;
@@ -143,8 +154,12 @@ class AddStudent extends StatelessWidget {
                               child: FadeInRight(
                                 child: CustomTextFieldWidget(
                                     validator: (value) {
-                                      if (value!.isEmpty) {
+                                      if (value.isEmpty || value == null) {
                                         return 'Please enter a Pincode.';
+                                      }
+                                      if (value.toString().length < 6 ||
+                                          value.toString().length > 6) {
+                                        return 'Please enter a Valid Pincode';
                                       }
                                       return null;
                                     },
@@ -165,7 +180,36 @@ class AddStudent extends StatelessWidget {
                               icon: Icons.save,
                               title: 'Save',
                               voidCallback: () {
-                                viewModel.validateForm(context);
+                                if (viewModel.formKey.currentState!
+                                        .validate() &&
+                                    viewModel.image == null) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: const Text('Missing Image'),
+                                      content: const Text(
+                                          'Please select an image for the student.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context),
+                                          child: const Text('OK'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                } else if (viewModel.formKey.currentState!
+                                    .validate()) {
+                                  viewModel.addStudent(context);
+                                  context
+                                      .read<StudentListProvider>()
+                                      .fetchStudents();
+                                  customSnackBar(
+                                      context, "Student Added Successfully",
+                                      () {
+                                    NavigationService.instance.goBack();
+                                  });
+                                }
                               }),
                         ),
                         h30,

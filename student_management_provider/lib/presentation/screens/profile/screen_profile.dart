@@ -8,6 +8,7 @@ import 'package:student_management_provider/core/navigation/navigation_service.d
 import 'package:student_management_provider/domain/models/student_model/student_model.dart';
 import 'package:student_management_provider/presentation/provider/student/student_list_provider.dart';
 import 'package:student_management_provider/presentation/screens/edit_student/edit_student.dart';
+import 'package:student_management_provider/presentation/screens/profile/widget/delete_alert_dialogue_widget.dart';
 import 'package:student_management_provider/presentation/screens/profile/widget/profile_image_widget.dart';
 import 'package:student_management_provider/presentation/screens/widgets/small_button_widget.dart';
 
@@ -25,17 +26,7 @@ class ScreenProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final viewModel = Provider.of<StudentListProvider>(context);
-    viewModel.fetchStudentById(student.id!);
-    String address = viewModel.fetchedStudent!.address.isNotEmpty
-        ? viewModel.fetchedStudent!.address
-        : student.address;
-    String place = viewModel.fetchedStudent!.place.isNotEmpty
-        ? viewModel.fetchedStudent!.place
-        : student.place;
-    String pinCode = viewModel.fetchedStudent!.pincode.toString().isNotEmpty
-        ? viewModel.fetchedStudent!.pincode.toString()
-        : student.pincode.toString();
+
     return Scaffold(
         appBar: AppBar(
           surfaceTintColor: Theme.of(context).brightness == Brightness.dark
@@ -53,16 +44,11 @@ class ScreenProfile extends StatelessWidget {
                     builder: (context, provider, _) {
                   return GestureDetector(
                     onTap: () {
-                      // context
-                      //     .read<StudentListProvider>()
-                      //     .deleteStudent(student.id!);
-                      provider.deleteStudent(student.id!, () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Student deleted successfully')),
-                        );
-                        NavigationService.instance.goBack();
-                      });
+                      showDialog(
+                        context: context,
+                        builder: (context) => DeleteAlertDialogueWidget(
+                            context: context, studentId: student.id!),
+                      );
                     },
                     child: Container(
                       decoration:
@@ -97,9 +83,7 @@ class ScreenProfile extends StatelessWidget {
               ),
               h10,
               Text(
-                viewModel.fetchedStudent!.name.isNotEmpty
-                    ? viewModel.fetchedStudent!.name
-                    : student.name,
+                student.name,
                 style: GoogleFonts.roboto(fontSize: 20),
               ),
               h20,
@@ -109,9 +93,7 @@ class ScreenProfile extends StatelessWidget {
               ),
               h10,
               Text(
-                viewModel.fetchedStudent!.course.isNotEmpty
-                    ? viewModel.fetchedStudent!.course
-                    : student.course,
+                student.course,
                 style: GoogleFonts.roboto(fontSize: 20),
               ),
               h20,
@@ -121,9 +103,7 @@ class ScreenProfile extends StatelessWidget {
               ),
               h10,
               Text(
-                viewModel.fetchedStudent!.phoneNumber.toString().isNotEmpty
-                    ? viewModel.fetchedStudent!.phoneNumber.toString()
-                    : student.phoneNumber.toString(),
+                student.phoneNumber.toString(),
                 style: GoogleFonts.roboto(fontSize: 20),
               ),
               h20,
@@ -133,7 +113,7 @@ class ScreenProfile extends StatelessWidget {
               ),
               h10,
               Text(
-                "$address, $place, $pinCode",
+                "${student.address}, ${student.place}, ${student.pincode}",
                 style: GoogleFonts.roboto(fontSize: 20),
               ),
               h30,
@@ -143,12 +123,9 @@ class ScreenProfile extends StatelessWidget {
                     icon: Icons.edit,
                     title: 'Edit',
                     voidCallback: () {
-                      NavigationService.instance.navigate(
-                        EditStudent(
-                          student: student,
-                        ),
-                        () => viewModel.refreshStudentList(),
-                      );
+                      NavigationService.instance.navigate(EditStudent(
+                        student: student,
+                      ));
                     });
               }),
               h30,

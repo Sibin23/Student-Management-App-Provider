@@ -1,9 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
-import 'package:student_management_provider/domain/models/student_model/student_model.dart';
 import 'package:student_management_provider/domain/db/student_db.dart';
-import 'package:student_management_provider/presentation/provider/student/student_list_provider.dart';
+import 'package:student_management_provider/domain/models/student_model/student_model.dart';
 
 class NewStudentProvider extends ChangeNotifier {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -36,21 +35,10 @@ class NewStudentProvider extends ChangeNotifier {
     setImage(pickedImage);
   }
 
-  Future<void> validateForm(BuildContext context) async {
-    if (formKey.currentState!.validate()) {
-      try {
-        await addStudent(context);
-      } catch (e) {
-        print("printing validation error $e");
-      }
-    }
-  }
-
   DatabaseHelper dataBaseHelper = DatabaseHelper();
 
   Future<void> addStudent(BuildContext context) async {
     try {
-      print("path while adding $profileImgPath");
       final studentInfo = StudentModel(
         image: profileImgPath ?? '',
         name: nameController.text.trim(),
@@ -65,15 +53,11 @@ class NewStudentProvider extends ChangeNotifier {
       // Call the updated insertStudent method from DatabaseHelper
       await dataBaseHelper.insertStudent(studentInfo);
 
-      final studentListProvider =
-          Provider.of<StudentListProvider>(context, listen: false);
-      studentListProvider.refreshStudentList(); // Call refresh method
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Student added successfully')),
-      );
-      Navigator.pop(context);
+      // Call refresh method
     } catch (e) {
-      print('Error adding student: $e');
+      if (kDebugMode) {
+        print('Error adding student: $e');
+      }
     } finally {
       clearForm();
     }

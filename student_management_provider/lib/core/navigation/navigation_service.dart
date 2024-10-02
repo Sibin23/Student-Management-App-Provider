@@ -16,9 +16,11 @@ class NavigationService {
         },);
   }
 
-  navigateUntil(Widget screen) {
+  navigateUntil(Widget screen,[VoidCallback? voidCallback]) {
     navigationKey.currentState!.pushAndRemoveUntil(
-        MaterialPageRoute(builder: (ctx) => screen), (route) => false);
+        MaterialPageRoute(builder: (ctx) => screen), (route) => false).then((value){
+          voidCallback!();
+        });
   }
 
   goBack() {

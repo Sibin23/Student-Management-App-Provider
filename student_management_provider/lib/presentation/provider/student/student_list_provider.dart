@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:student_management_provider/domain/models/student_model/student_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:student_management_provider/domain/db/student_db.dart';
+import 'package:student_management_provider/domain/models/student_model/student_model.dart';
 
 class StudentListProvider extends ChangeNotifier {
   late DatabaseHelper databaseHelper;
@@ -36,7 +36,8 @@ class StudentListProvider extends ChangeNotifier {
   Future<StudentModel?> fetchStudents() async {
     students = await databaseHelper.getStudents();
     filteredStudents = students;
-    notifyListeners(); // Notify listeners of data change
+    notifyListeners();
+    return null; // Notify listeners of data change
   }
 
   StudentModel? fetchStudentById(int studentId) {
@@ -60,7 +61,6 @@ class StudentListProvider extends ChangeNotifier {
     if (!isSearching) {
       filteredStudents = students;
     }
-    print(isSearching);
     notifyListeners();
   }
 
@@ -69,19 +69,20 @@ class StudentListProvider extends ChangeNotifier {
     if (!closeSearch) {
       filteredStudents = students;
     }
-    print('closeSearch $closeSearch');
     notifyListeners();
   }
 
   final DatabaseHelper db = DatabaseHelper();
 
-  Future<void> deleteStudent(int studentId, void Function() onDeleted) async {
+  Future<void> deleteStudent(int studentId, VoidCallback voidCallback) async {
     try {
       await db.deleteStudent(studentId);
       await refreshStudentList(); // Refresh student list after deletion
-      onDeleted(); // Call the callback function to show the snackbar
+      voidCallback(); // Call the callback function to show the snackbar
     } catch (e) {
-      print("Error deleting student: $e");
+      if (kDebugMode) {
+        print("Error deleting student: $e");
+      }
     }
   }
 }

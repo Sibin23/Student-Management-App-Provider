@@ -16,6 +16,7 @@ class StudentListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.read<StudentListProvider>().refreshStudentList();
     return Consumer<StudentListProvider>(builder: (context, studentList, _) {
       return studentList.students.isEmpty
           ? const Center(

@@ -2,9 +2,11 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:student_management_provider/core/constants.dart';
+import 'package:student_management_provider/core/navigation/navigation_service.dart';
 import 'package:student_management_provider/domain/models/student_model/student_model.dart';
 import 'package:student_management_provider/presentation/provider/student/edit_student_provider.dart';
 import 'package:student_management_provider/presentation/provider/student/student_list_provider.dart';
+import 'package:student_management_provider/presentation/screens/home/screen_home.dart';
 import 'package:student_management_provider/presentation/screens/widgets/custom_textfield_widget.dart';
 import 'package:student_management_provider/presentation/screens/widgets/small_button_widget.dart';
 
@@ -27,7 +29,6 @@ class _EditStudentState extends State<EditStudent> {
   final TextEditingController ageController = TextEditingController();
   final TextEditingController placeController = TextEditingController();
   final TextEditingController pincodeController = TextEditingController();
-  final provider = StudentListProvider();
   int? id;
   @override
   void initState() {
@@ -37,7 +38,6 @@ class _EditStudentState extends State<EditStudent> {
 
   void assignStudentValues(StudentModel student) {
     id = student.id;
-    // provider.profileImgPath = student.image;
     nameController.text = student.name;
     courseController.text = student.course;
     phoneNumController.text = student.phoneNumber.toString();
@@ -112,6 +112,9 @@ class _EditStudentState extends State<EditStudent> {
                                         validator: (value) {
                                           if (value == null || value.isEmpty) {
                                             return 'Enter Age';
+                                          } else if (value.toString().length >
+                                              3) {
+                                            return "Enter a  valid age";
                                           } else {
                                             return null;
                                           }
@@ -130,7 +133,8 @@ class _EditStudentState extends State<EditStudent> {
                                           if (value.isEmpty || value == null) {
                                             return 'Please enter a Phone no.';
                                           }
-                                          if (value.toString().length < 10) {
+                                          if (value.toString().length < 10 ||
+                                              value.toString().length > 10) {
                                             return 'Please enter a valid phone.no';
                                           }
                                           return null;
@@ -184,7 +188,8 @@ class _EditStudentState extends State<EditStudent> {
                                           if (value.isEmpty || value == null) {
                                             return 'Please enter a Pincode.';
                                           }
-                                          if (value.toString().length < 6) {
+                                          if (value.toString().length < 6 ||
+                                              value.toString().length > 6) {
                                             return 'Please enter a Valid Pincode';
                                           }
                                           return null;
@@ -206,26 +211,39 @@ class _EditStudentState extends State<EditStudent> {
                                     title: 'Save',
                                     voidCallback: () {
                                       if (formKey.currentState!.validate()) {
-                                        final info = StudentModel(
-                                            id: widget.student.id,
-                                            address:
-                                                addressController.text.trim(),
-                                            name: nameController.text.trim(),
-                                            age: int.parse(
-                                                ageController.text.trim()),
-                                            place: placeController.text.trim(),
-                                            course:
-                                                courseController.text.trim(),
-                                            phoneNumber: int.parse(
-                                                phoneNumController.text.trim()),
-                                            image: viewModel.profileImgPath ??
-                                                widget.student.image,
-                                            pincode: int.parse(
-                                                pincodeController.text.trim()));
-                                        viewModel.studentModel = info;
                                         context
                                             .read<EditStudentProvider>()
-                                            .validateForm(context, info);
+                                            .updateStudent(StudentModel(
+                                                id: widget.student.id,
+                                                address: addressController.text
+                                                    .trim(),
+                                                name:
+                                                    nameController.text.trim(),
+                                                age: int.parse(
+                                                    ageController.text.trim()),
+                                                place:
+                                                    placeController.text.trim(),
+                                                course: courseController.text
+                                                    .trim(),
+                                                phoneNumber: int.parse(
+                                                    phoneNumController.text
+                                                        .trim()),
+                                                image:
+                                                    viewModel.profileImgPath ??
+                                                        widget.student.image,
+                                                pincode: int.parse(
+                                                    pincodeController.text
+                                                        .trim())));
+                                        customSnackBar(context,
+                                            "Student Updated Successfully !",
+                                            () {
+                                          context
+                                              .read<StudentListProvider>()
+                                              .fetchStudents();
+                                          NavigationService.instance
+                                              .navigateUntil(
+                                                  const ScreenHome());
+                                        });
                                       }
                                     })),
                             h30,

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:student_management_provider/presentation/provider/student/student_list_provider.dart';
 import 'package:student_management_provider/presentation/screens/home/widgets/home_appbar_widget.dart';
 import 'package:student_management_provider/presentation/screens/home/widgets/student_list_widget.dart';
 
