@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:student_management_provider/core/colors.dart';
 import 'package:student_management_provider/core/navigation/navigation_service.dart';
 import 'package:student_management_provider/presentation/provider/splash_screen/splash_screen_provider.dart';
 import 'package:student_management_provider/presentation/provider/student/edit_student_provider.dart';
@@ -9,6 +11,7 @@ import 'package:student_management_provider/presentation/screens/splash/splash_s
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const MyApp());
 }
 
@@ -34,9 +37,9 @@ class MyApp extends StatelessWidget {
         ),
         theme: ThemeData(
           appBarTheme: AppBarTheme(
-              backgroundColor: Colors.grey[300],
-              surfaceTintColor: Colors.grey[300]),
-          scaffoldBackgroundColor: Colors.grey[300],
+              backgroundColor: greyBackground,
+              surfaceTintColor: greyBackground),
+          scaffoldBackgroundColor: greyBackground,
           useMaterial3: true,
         ),
         home: const SplashScreen(),

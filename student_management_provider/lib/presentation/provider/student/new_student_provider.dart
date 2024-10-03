@@ -50,10 +50,7 @@ class NewStudentProvider extends ChangeNotifier {
         place: placeController.text.trim(),
       );
 
-      // Call the updated insertStudent method from DatabaseHelper
       await dataBaseHelper.insertStudent(studentInfo);
-
-      // Call refresh method
     } catch (e) {
       if (kDebugMode) {
         print('Error adding student: $e');
@@ -71,6 +68,6 @@ class NewStudentProvider extends ChangeNotifier {
     ageController.clear();
     placeController.clear();
     pincodeController.clear();
-    clearImage(); // Clear image data as well
+    clearImage();
   }
 }
